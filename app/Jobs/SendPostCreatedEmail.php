@@ -24,6 +24,6 @@ class SendPostCreatedEmail implements ShouldQueue
 
     public function handle(): void
     {
-        Mail::to('user@example.com')->queue((new PostCreatedMail($this->post))->onQueue('sending-mails'));
+        Mail::to('user@example.com')->later(now()->addMilliseconds(60),(new PostCreatedMail($this->post))->onQueue('sending-mails'));
     }
 }
