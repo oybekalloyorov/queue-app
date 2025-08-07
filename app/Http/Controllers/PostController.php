@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Jobs\SendPostCreatedEmail;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class PostController extends Controller implements ShouldQueue
 {
     public function index()
     {
@@ -28,7 +29,7 @@ class PostController extends Controller
         $post = Post::create($request->only('title', 'content'));
 
         // Email yuborishni queue'ga yuboramiz
-        SendPostCreatedEmail::dispatch($post);
+        SendPostCreatedEmail::dispatch($post)->onQueue('sending-mails');
 
         return redirect()->route('posts.index')->with('success', 'Post yaratildi va email yuborilmoqda...');
     }
